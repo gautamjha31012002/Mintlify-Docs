@@ -1,0 +1,12 @@
+---
+title: " 0.3 ~ Why GO ?"
+---
+
+Python dominates AI research. It does not dominate AI Infrastructure. The systems you already run — Kubernetes, Docker, Terraform, Prometheus, etcd, most of the Cloud Native Computing Foundation landscape, and a large share of Web3 clients — are written in Go. When your AI agent's job is to operate that world Go is the natural language for it:
+
+- **Single static binaries.** Ship an agent as one scratch-image container with no interpreter, no virtualenv, no dependency hell.
+- **First class concurrency.** Agents wait on network I/O constantly — model calls, too calls, retrieval. Goroutines and channels make fan-out, timeouts and cancellation natural.
+- **Strong typing and** `context.Context`**.** Structures tool schemas, deadlines and cancellation are exactly what production agents need, and Go gives them to you in the standard library.
+- **You can read the ecosystem.** When something breaks in `client-go` or `go-ethereum`, the source is right there in a language you already speak.
+
+We will use python in exactly one way: as an occasional one-line point of comparison. There are no Python projects in the Docs.

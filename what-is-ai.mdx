@@ -1,0 +1,11 @@
+---
+title: "Introduction"
+---
+
+You are about to spend a book's worth of effort putting artificial intelligence to work in production systems. Before you wire it into anything that can restart a database or drain a node, you owe yourself a precise answer to a deceptively simple question: **what is AI, actually?**
+
+This matters more for you than for most people who ask it. A product manager can be satisfied with _"it's software that's smart."_ An operator cannot. You will be paged when it misbehaves. You will be asked why it cost what it cost, why it gave a different answer the second time, why it confidently did the wrong thing. To answer those questions — and to build systems that fail safely — you need a mental model that is accurate down to the level where your decisions live.
+
+So this chapter does something unusual for an "intro to AI." It refuses to hand-wave. By the end of it you will be able to state, in one sentence and without metaphor, what the AI in this docs is and is not. You will understand the single most consequential fact about it — that it is probabilistic, not deterministic — and why that one property reshapes everything you know about testing, idempotency, and reliability. And you will write your first Go program that treats an AI model exactly the way a disciplined engineer should: as a pluggable, fallible dependency behind an interface.
+
+We will not yet call a real model over the network — that is  later Chapter's job, once you understand the API. Here we build the foundation everything else rests on.

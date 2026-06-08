@@ -55,7 +55,12 @@
             "group": "AI Foundations For DevOps Engineers",
             "pages": [
               "chapter-0-intro",
-              "chapter-1-what-is-ai"
+              {
+                "group": "Chapter 1 ~ What is AI?",
+                "pages": [
+                  "what-is-ai"
+                ]
+              }
             ]
           }
         ]
