@@ -58,7 +58,10 @@
               {
                 "group": "Chapter 1 ~ What is AI?",
                 "pages": [
-                  "what-is-ai"
+                  "what-is-ai",
+                  "why-this-topic-matters",
+                  "real-world-analogy",
+                  "architecture-diagram"
                 ]
               }
             ]

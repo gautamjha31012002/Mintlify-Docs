@@ -1,0 +1,19 @@
+---
+title: "Why This Topic Matters"
+---
+
+In the systems you operate today, behavior is specified. Someone wrote the rule. If a pod exceeds its memory limit, the kernel's OOM killer terminates it — not because a model decided it was a good idea, but because a human encoded that policy and the code executes it the same way every single time. When it goes wrong, you can read the code, find the rule, and fix it.
+
+AI breaks that contract on purpose. An AI component's behavior is **learned**, not specified, and it is **sampled**, not computed. The same input can produce different outputs. There is no single line of code you can point to that "decided." This is not a bug you can file; it is the nature of the thing.
+
+That difference is the source of nearly every operational surprise newcomers hit:
+
+• A test that passed yesterday fails today with no code change.
+
+• A retry produces a different answer instead of the same one.
+
+• The system is confidently, fluently wrong — and there is no stack trace.
+
+• Cost and latency vary with the content of the request, not just its rate.
+
+None of these are reasons to avoid AI. They are reasons to understand it before you depend on it. Every reliability technique in this book — verification loops, approval gates, structured outputs, evaluations, cost ceilings — exists precisely because AI is probabilistic. You cannot design those guardrails until you internalize why they are necessary, and that begins with a correct definition.
