@@ -1,3 +1,13 @@
 ---
 title: "Real-World DevOps Example"
 ---
+
+Make it concrete at production scale. Every team running Prometheus and Alertmanager eventually drowns in alert noise: hundreds of firing alerts during an incident, most of them downstream symptoms of one root cause, a few of them the thing that actually matters. Humans burn out triaging them. This is a textbook place for AI — fuzzy, language-heavy judgment at a volume humans can't sustain — and a textbook place to get the guardrails right.
+
+The model earns its place by doing the linguistic, pattern-heavy work: reading a hundred alert descriptions, recognizing that ninety of them are the same database failover, writing a two-sentence human summary, and ranking what to look at first. But every consequence flows through deterministic policy: informational digests are automatic; anything critical pages a human and attaches the model's reasoning  for them to judge. No remediation is automated in this example — that comes much later, and only behind an approval gate.
+
+<Info>
+  DEVOPS IN PRACTICE
+
+  This is the same instinct you already have about automation. You will happily auto-remediate a known, reversible condition (restart a wedged side‐car) but you require a human for anything novel or destructive. AI does not change that instinct — it raises the stakes, because the component proposing actions is now non-deterministic. The blast-radius discipline you learned from terraform plan and progressive delivery transfers directly.
+</Info>

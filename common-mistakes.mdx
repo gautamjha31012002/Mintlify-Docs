@@ -1,0 +1,10 @@
+---
+title: "Common Mistakes"
+---
+
+1. **Believing the AI "understands."** It is a statistical text predictor, not a mind. The moment you attribute intent or comprehension to it, you stop engineering guardrails and start trusting vibes. Stay mechanical in your thinking even when the output is dazzling.
+2. **Expecting determinism.** Newcomers file "bug reports" because the same prompt gave two answers. That is the system working as designed. Engineer for a distribution of outcomes: evals, retries with validation, and tolerance for variation where it is harmless.
+3. **Dismissing it as "just autocomplete."** The opposite error. Yes, it predicts the next token — and that simple mechanism, at sufficient scale, produces genuinely useful behavior across an astonishing range of tasks. Underestimating it leads to missed opportunities; overestimating it leads to outages. Calibrated respect is the goal.
+4. **Using AI for things ordinary code does better.** Arithmetic, exact lookups, schema validation, idempotent transforms, hard policy enforcement — write these in Go. Reaching for a model here is slower, costlier, and less reliable. Match the tool to the shape of the problem.
+5. **Ignoring cost and latency until the bill arrives.** Tokens are money and time. A design that ignores them works in a demo and fails a budget review. Build cost intuition from your very first call 
+6. **Forgetting the model has no memory.** Each call is stateless. If you don't send the context, the model doesn't have it. Many "the AI forgot what I told it" complaints are really "the program didn't resend the history."

@@ -67,7 +67,8 @@
                   "production-explanation",
                   "golang-code-examples",
                   "end-to-end-example",
-                  "real-world-dev-ops-example"
+                  "real-world-dev-ops-example",
+                  "common-mistakes"
                 ]
               }
             ]
