@@ -1,3 +1,22 @@
 ---
 title: "Intermediate Explanation"
 ---
+
+With the vocabulary in place, we can state the mechanics that actually affect your engineering.
+
+1. **An LLM is (almost) a pure function over text.** Stripe away the product wrapping and a language model is a function with a shape like this: 
+   <Frame>
+     ![Image](/images/image.png)
+   </Frame>
+   The model does not "know" Paris. It computes that, across all the text it was trained on, the token `Paris` is overwhelmingly the most likely continuation of that phrase. A step is called **sampling** then picks one token from that distribution. Append it to the input and run again to get the next token. Repeat. That loop -- Predict a distribution, sample a token, append, repeat -- is the whole show. 
+2. **Because of sampling, it is probabilistic.** If the system always picked the single most likely token, it would be deterministic but dull and repetitive. In practice a temperature setting introduces controlled randomness so the model can pick the second- or third-likeliest token sometimes. That is why the same prompt can yield different completions. You can often turn temperature down to make outputs more repeatable, but you should not assume bit-for-bit determinism.
+3. **It has no memory between calls.** Each request is independent. The model does not remember your last question. The illusion of memory in a chat product is created by resending the conversation history with every request. This is a profound operational fact: an LLM call is stateless, like a pure HTTP request, which is exactly why it scales and exactly why you are responsible for managing context and memory.
+4. **Its knowledge is frozen and approximate.** A model's parameters were fixed at the end of training. It has a knowledge cutoff — a date after which it knows nothing — and it stores patterns, not facts, so it will sometimes produce fluent, plausible, completely false statements. The field calls this hallucination, and it is not an occasional glitch; it is a direct consequence of being a probabilistic text predictor with no ground-truth lookup. RAG and search exist primarily to fix this by feeding the model real, current facts at request time.
+
+<Info>
+  THE REFRAME THAT MAKES EVERYTHING CLICK\
+  \
+  Stop thinking "the AI understands my question." Start thinking "given this text, what text is statistically likely to follow in the kind of documents this model was trained on?" Every confusing behavior — the hallucinations, the sensitivity to phrasing, the way examples in the prompt improve answers — becomes predictable once you adopt that frame.
+</Info>
+
+5. **It is the wrong tool for exactness.** Two plus two is not "probably four" to a CPU; it is four, always. Do not use an LLM to do arithmetic, enforce a hard policy, or perform an idempotent calculation you could write in ten lines of Go. Use it for the fuzzy, language-shaped, judgment-heavy parts of a problem and hand the exact parts to ordinary code. The art of agent design,  is drawing that line well.
