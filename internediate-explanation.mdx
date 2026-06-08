@@ -7,7 +7,7 @@ With the vocabulary in place, we can state the mechanics that actually affect yo
 **An LLM is (almost) a pure function over text.** Stripe away the product wrapping and a language model is a function with a shape like this: 
 
 <Frame>
-  ![Image](/images/image-1.png)
+  ![Llm](/images/llm.png)
 </Frame>
 
 The model does not "know" Paris. It computes that, across all the text it was trained on, the token `Paris` is overwhelmingly the most likely continuation of that phrase. A step is called **sampling** then picks one token from that distribution. Append it to the input and run again to get the next token. Repeat. That loop -- Predict a distribution, sample a token, append, repeat -- is the whole show. 
