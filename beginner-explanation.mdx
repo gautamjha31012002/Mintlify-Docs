@@ -1,0 +1,39 @@
+---
+title: "Beginner Explanation"
+---
+
+Let's define the words from the outside in, each one a strict subset of the one before.
+
+<Card title="ARTIFICIAL INTELLIGENCE (AI)" icon="brain">
+  Software that performs tasks we normally associate with human intelligence: understanding language, recognizing images, making decisions, planning. It is an aspiration and a field, not a specific technique. A chess engine, a spam filter, and a chatbot are all AI.
+</Card>
+
+AI comes in two big flavors. The old flavor, symbolic AI, is rules written by humans: "if the email contains these words and comes from an unknown sender, mark it spam." You already write symbolic AI; you just call it "code." It is precise and explainable and brittle — it only knows what you told it.
+
+The flavor that powers everything in this docs is **machine learning.**
+
+<Card title="MACHINE LEARNING (ML)" icon="washing-machine">
+  A way of building software that learns patterns from examples (data) instead of being given explicit rules. You show it ten thousand emails labelled "spam" or "not spam," and it infers a rule you never wrote.
+</Card>
+
+Inside machine learning is **deep learning**, which is just machine learning that uses **neural networks** with many layers.
+
+<Card title="DEEP LEARNING (DL)" icon="align-horizontal-justify-end">
+  Machine learning built on multi-layer neural networks — mathematical structures, loosely inspired by brains, that transform numbers through many stages. "Deep" means "many layers." It is the engine behind modern language and image models.
+</Card>
+
+You do not need to know how to build a neural network to use one, any more than you need to build a database engine to run SELECT . For now, treat a neural network as a black box that takes numbers in and produces numbers out, where the numbers were tuned by showing it enormous amounts of data.
+
+Inside deep learning is **generative AI** — models that produce new content rather than just sorting existing content into bins.
+
+<Card title="GENERATIVE AI (GENAI)" icon="book">
+  Deep-learning models that create new content — text, code, images, audio — rather than only classifying or predicting a single label. A spam filter says "spam / not spam." A generative model writes you a fresh paragraph.
+</Card>
+
+And the specific kind of generative model this book uses is the Large Language Model.
+
+<Card title="LARGE LANGUAGE MODEL (LLM)" icon="a-large-small">
+  A deep-learning model trained on enormous amounts of text to do one narrow thing extraordinarily well: given some text, predict what text comes next. Everything an LLM appears to do — answer questions, write Go, plan a deployment — is that single next-text prediction, applied over and over.
+</Card>
+
+That last definition is the one to tattoo on the inside of your eyelids. An LLM is a next-text predictor. We will unpack exactly how in Chapter 3. For now, the beginner's takeaway is simply the nesting: AI \> ML \> DL \> GenAI \> LLM, each a smaller, more specific box inside the last.
