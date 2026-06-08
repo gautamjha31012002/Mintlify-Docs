@@ -1,3 +1,99 @@
 ---
 title: "Golang Code Examples"
 ---
+
+Let's make the central idea concrete in code: an AI component is a dependency behind an interface, swappable and fallible, exactly like a database or a cloud API. We will model a small, realistic DevOps task — classifying a log line's severity— first the old way (specified rules) and then the new way (a learned classifier behind an interface). This compiles and runs with no network and no API key; it is about structure, not about calling a model yet.
+
+```go
+package main
+
+import (
+	"strings"
+)
+
+// Severity is the classification we want for each log line.
+type Severity string
+
+const (
+	SeverityInfo     Severity = "INFO"
+	SeverityWarning  Severity = "WARNING"
+	SeverityCritical Severity = "CRITICAL"
+	SeverityUnknown  Severity = "UNKNOWN"
+)
+
+// ---------------------------------------------------------------------------
+// The OLD way: symbolic AI. Explicit, deterministic, brittle rules.
+// You already write this kind of code every day.
+// ---------------------------------------------------------------------------
+
+func classifyByRules(line string) Severity {
+	l := strings.ToLower(line)
+	switch {
+	case strings.Contains(l, "panic"), strings.Contains(l, "fatal"),
+		strings.Contains(l, "oomkilled"):
+		return SeverityCritical
+	case strings.Contains(l, "error"), strings.Contains(l, "failed"):
+		return SeverityWarning
+	case strings.Contains(l, "info"), strings.Contains(l, "started"):
+		return SeverityInfo
+	default:
+		return SeverityUnknown // anything we did not foresee falls through
+	}
+}
+```
+
+The rule-based version is honest about its limits: anything the author did not anticipate returns `UNKNOWN`. It cannot generalize. A log line that means catastrophe but happens not to contain the word "panic" sails through as `UNKNOWN` . 
+
+Now the learned approach. The key engineering move is that we do **not** call a model directly from our business logic. We define an interface — a contract — and depend on that. Today we back it with a mock.
+
+```go
+// -------------------------------------------------------------------------
+// The NEW way: define the AI as a swappable dependency behind an interface.
+// -------------------------------------------------------------------------
+// Classifier is our contract. An LLM-backed implementation, a mock, or a
+// rules-based fallback can all satisfy it. Business logic depends on THIS,
+// never on a concrete model client.
+type Classifier interface {
+	Classify(ctx context.Context, line string) (Severity, error)
+}
+
+// ruleClassifier adapts our deterministic rules to the interface, so we can
+// use it as a cheap, offline fallback when the model is unavailable.
+type ruleClassifier struct{}
+
+func (ruleClassifier) Classify(_ context.Context, line string) (Severity, error) {
+	return classifyByRules(line), nil
+}
+
+// mockLLMClassifier stands in for a real model. It is intentionally a little
+// "fuzzy": it generalizes beyond the literal keywords the rules check for,
+// the way a learned model would. (later chapter replaces this with a real call.)
+type mockLLMClassifier struct{}
+
+func (mockLLMClassifier) Classify(ctx context.Context, line string) (Severity, error) {
+	if err := ctx.Err(); err != nil {
+		return SeverityUnknown,
+			err // respect cancellation/timeouts like real I/O
+	}
+	l := strings.ToLower(line)
+	switch {
+	case strings.Contains(l, "crashloopbackoff"),
+		strings.Contains(l, "evicted"),
+		strings.Contains(l, "cannot allocate memory"):
+		// A model trained on ops text "knows" these mean trouble, even though
+		// none of them contain the word "panic" or "error".
+		return SeverityCritical, nil
+	case strings.Contains(l, "retry"), strings.Contains(l, "degraded"),
+		strings.Contains(l, "slow"):
+		return SeverityWarning, nil
+	default:
+		return classifyByRules(line), nil // fall back to the rules
+	}
+}
+```
+
+Three production-relevant ideas are already visible in this small example:
+
+- **The interface is the seam.** Business logic speaks to `Classifier` , so the model is a pluggable detail. This is ordinary dependency inversion — the same discipline you apply to databases — and it is how you keep an unpredictable component from infecting the rest of your system.
+- `context.Context `**is threaded through.** A model call is network I/O. It must be cancellable and have a deadline. We honor `ctx` even in the mock so the shape is right from day one.
+- **There is always a fallback.** When the model is down, over budget, or too slow, the rules-based `Classifier` keeps the lights on. Degrade, don't fail.
