@@ -1,6 +1,6 @@
 {
   "theme": "sequoia",
-  "name": "Knowledge base",
+  "name": "Gautam Jha Docs",
   "description": "Onboarding, employee handbook, HR guides, IT help, company policies, and department runbooks.",
   "colors": {
     "primary": "#166E3F",
@@ -27,8 +27,7 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/yourcompany",
-      "linkedin": "https://linkedin.com/company/yourcompany"
+      "linkedin": "https://www.linkedin.com/in/gautam-jha-devops"
     }
   },
   "icons": {
@@ -50,98 +49,6 @@
   "$schema": "https://mintlify.com/docs.json",
   "navigation": {
     "tabs": [
-      {
-        "tab": "Onboarding",
-        "hidden": true,
-        "groups": [
-          {
-            "group": "Welcome",
-            "pages": [
-              "index"
-            ]
-          },
-          {
-            "group": "Your first days",
-            "pages": []
-          },
-          {
-            "group": "Tools & access",
-            "pages": []
-          }
-        ]
-      },
-      {
-        "tab": "HR & People",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": []
-          },
-          {
-            "group": "Benefits & time off",
-            "pages": []
-          },
-          {
-            "group": "Growth & pay",
-            "pages": []
-          }
-        ]
-      },
-      {
-        "tab": "IT & Security",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": []
-          },
-          {
-            "group": "Access & devices",
-            "pages": []
-          },
-          {
-            "group": "Security training",
-            "pages": []
-          }
-        ]
-      },
-      {
-        "tab": "Policies",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": []
-          },
-          {
-            "group": "Conduct & spend",
-            "pages": []
-          },
-          {
-            "group": "Remote work",
-            "pages": []
-          }
-        ]
-      },
-      {
-        "tab": "Engineering",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": []
-          },
-          {
-            "group": "Setup & deployment",
-            "pages": []
-          },
-          {
-            "group": "Incident response",
-            "pages": []
-          },
-          {
-            "group": "Architecture",
-            "pages": []
-          }
-        ]
-      },
       {
         "tab": "AI Agents For DevOps",
         "groups": [
