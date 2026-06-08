@@ -13,17 +13,6 @@
   },
   "favicon": "/favicon.ico",
   "navbar": {
-    "links": [
-      {
-        "href": "/it-security/access-requests",
-        "label": "Submit IT ticket"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Employee portal",
-      "href": "https://dashboard.mintlify.com"
-    }
   },
   "footer": {
     "socials": {
