@@ -1,7 +1,7 @@
 {
   "theme": "sequoia",
-  "name": "Gautam Jha Docs",
-  "description": "Onboarding, employee handbook, HR guides, IT help, company policies, and department runbooks.",
+  "name": "Learn by Gautam Jha",
+  "description": "Production-grade guides, tutorials, and deep dives on AI, DevOps, Platform Engineering, Kubernetes, eBPF, Golang, and Web3 Infrastructure.",
   "colors": {
     "primary": "#166E3F",
     "light": "#26BD6C",
