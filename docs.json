@@ -65,7 +65,9 @@
                   "beginner-explanation",
                   "internediate-explanation",
                   "production-explanation",
-                  "golang-code-examples"
+                  "golang-code-examples",
+                  "end-to-end-example",
+                  "real-world-dev-ops-example"
                 ]
               }
             ]

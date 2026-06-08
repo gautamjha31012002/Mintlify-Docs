@@ -1,0 +1,149 @@
+---
+title: "End to End Example"
+---
+
+Let's assemble those parts into something complete and genuinely useful: a tiny log triage CLI that reads log lines from standard input, classifies each, prints a colored severity, tallies the counts, and — importantly for automation — exits non-zero if anything critical was seen, so it can gate a pipeline.
+
+```go
+package main
+
+import (
+	"bufio"
+	"context"
+	"fmt"
+	"os"
+	"strings"
+	"time"
+)
+
+type Severity string
+
+const (
+	SeverityInfo     Severity = "INFO"
+	SeverityWarning  Severity = "WARNING"
+	SeverityCritical Severity = "CRITICAL"
+	SeverityUnknown  Severity = "UNKNOWN"
+)
+
+type Classifier interface {
+	Classify(ctx context.Context, line string) (Severity, error)
+}
+
+// Mock classifier.
+// Replace this with a real LLM-backed implementation later.
+type mockLLMClassifier struct{}
+
+func (mockLLMClassifier) Classify(ctx context.Context, line string) (Severity, error) {
+	select {
+	case <-ctx.Done():
+		return SeverityUnknown, ctx.Err()
+	default:
+	}
+
+	lower := strings.ToLower(line)
+
+	switch {
+	case strings.Contains(lower, "panic"),
+		strings.Contains(lower, "fatal"),
+		strings.Contains(lower, "critical"),
+		strings.Contains(lower, "out of memory"):
+		return SeverityCritical, nil
+
+	case strings.Contains(lower, "warn"),
+		strings.Contains(lower, "deprecated"),
+		strings.Contains(lower, "retry"):
+		return SeverityWarning, nil
+
+	default:
+		return SeverityInfo, nil
+	}
+}
+
+func colorize(sev Severity) string {
+	switch sev {
+	case SeverityInfo:
+		return "\033[32mINFO\033[0m" // green
+
+	case SeverityWarning:
+		return "\033[33mWARNING\033[0m" // yellow
+
+	case SeverityCritical:
+		return "\033[31mCRITICAL\033[0m" // red
+
+	default:
+		return "\033[37mUNKNOWN\033[0m" // white
+	}
+}
+
+func main() {
+	var clf Classifier = mockLLMClassifier{}
+
+	counts := map[Severity]int{
+		SeverityInfo:     0,
+		SeverityWarning:  0,
+		SeverityCritical: 0,
+		SeverityUnknown:  0,
+	}
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue
+		}
+
+		ctx, cancel := context.WithTimeout(
+			context.Background(),
+			5*time.Second,
+		)
+
+		sev, err := clf.Classify(ctx, line)
+		cancel()
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "classify error: %v\n", err)
+			sev = SeverityUnknown
+		}
+
+		counts[sev]++
+
+		fmt.Printf("%-18s | %s\n", colorize(sev), line)
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintf(os.Stderr, "read error: %v\n", err)
+		os.Exit(2)
+	}
+
+	fmt.Printf(
+		"\nsummary: info=%d warning=%d critical=%d unknown=%d\n",
+		counts[SeverityInfo],
+		counts[SeverityWarning],
+		counts[SeverityCritical],
+		counts[SeverityUnknown],
+	)
+
+	// Fail CI/CD if any critical log was seen.
+	if counts[SeverityCritical] > 0 {
+		os.Exit(1)
+	}
+}
+```
+
+```shellscript
+printf 'pod started\nreadiness probe slow\nBack-off restarting failed\ncontainer CrashLoopBackOff\n' \
+| go run ./cmd/triage
+
+INFO     | pod started
+WARNING  | readiness probe slow
+CRITICAL | Back-off restarting failed container CrashLoopBackOff
+summary: info=1 warning=1 critical=1 unknown=0
+
+echo "exit code: $?"
+exit code: 1
+```
+
+Notice what we built: a **deterministic shell** (argument handling, timeouts, tallying, exit codes, a CI contract) wrapped around a **swappable classification core.**
+
+Swap `mockLLMClassifier{}` for `ruleClassifier{}` and the program still runs — just less cleverly. In later  Chapters we will add a third implementation that calls a real model, and main will not change by a single line. That is the architecture of every reliable AI system in this docs, in miniature.
