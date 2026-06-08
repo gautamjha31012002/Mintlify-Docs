@@ -1,3 +1,19 @@
 ---
 title: "Production Explanation"
 ---
+
+Now the operator's view — what changes when this thing is in your critical path, serving real traffic, spending real money.
+
+**Behavior is a distribution, so test it like one.** You cannot assert `output = "expected"` against a probabilistic system and expect a green build every time. Production teams replace exact-match tests with evaluations ("evals"): a suite of inputs scored by criteria (Did the answer contain the right fact? Did it call the right tool? Did it stay within budget?), run many times, and tracked as a pass rate and a distribution, not a boolean. You treat a regression as "the pass rate dropped from 96% to 88%," the way you treat an SLO (Service Level Objective) breach.
+
+**Cost and latency are inputs, not constants.** Every call costs money proportional to the amount of text in and out, and latency grows with output length and model size. A prompt that works but is twice as long costs twice as much forever. Capacity planning for an AI system means _modelling tokens per request × requests per second × price per token_, plus tail latency from the occasional very long response.
+
+**The failure modes are new.** Alongside the failures you know (timeouts, 5xx, rate limits) sit AI-specific ones: hallucination, prompt injection (where untrusted input hijacks the instructions), silent quality drift when a provider updates a model behind a stable name, and non-determinism masquerading as flakiness. Your observability has to capture not just "did it respond" but "what did it say, what did it cost, which tools did it call, and did a human approve the dangerous ones."
+
+**Determinism must be engineered around it, not assumed within it.** The reliable pattern, used throughout this book, is a deterministic shell around a probabilistic core: ordinary Go code validates inputs, enforces schemas, checks the model's proposed actions against policy, requires approval for irreversible operations, executes through audited tools, and verifies results. The model proposes; your code disposes. If you remember one architectural principle from this chapter, make it that one.
+
+<Danger>
+  THE CARDINAL SIN\
+  \
+  Wiring a raw model output directly into a destructive action — kubectl delete , terraform apply , rm -rf , a funds transfer — with no validation, no policy check, and no human gate. A probabilistic system will eventually emit something you did not intend. The entire safety apparatus of this docs exists to make sure that when it does, nothing irreversible happens.
+</Danger>
